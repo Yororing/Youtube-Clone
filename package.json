@@ -1,0 +1,27 @@
+{
+  "name": "metube",
+  "version": "1.0.0",
+  "description": "make metube",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Yororing/Youtube-Clone.git"
+  },
+  "scripts": {
+    "dev": "nodemon --exec babel-node index.js"
+  },
+  "author": "Yororing",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Yororing/Youtube-Clone/issues"
+  },
+  "homepage": "https://github.com/Yororing/Youtube-Clone#readme",
+  "dependencies": {
+    "express": "^4.17.3"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.17.5",
+    "@babel/node": "^7.16.8",
+    "@babel/preset-env": "^7.16.11",
+    "nodemon": "^2.0.15"
+  }
+}
