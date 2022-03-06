@@ -16,7 +16,8 @@
   },
   "homepage": "https://github.com/Yororing/Youtube-Clone#readme",
   "dependencies": {
-    "express": "^4.17.3"
+    "express": "^4.17.3",
+    "morgan": "^1.10.0"
   },
   "devDependencies": {
     "@babel/core": "^7.17.5",

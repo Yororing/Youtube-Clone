@@ -1,21 +1,19 @@
-//Call express from Module
+//Call express, morgan from Module
 import express from "express";
+import morgan from 'morgan';
 
 const PORT = 4000;
 //Create express Application
 const app = express();
+//Create Controller or Middleware
+const logger = morgan("dev");
 
-//How to Using Express
-const handleAccess = (req, res) => {
-    return res.send("<h1>Access will be Done</h1>");
-};
-const handleLogin = (req, res) => {
-    return res.send("Login here.");
+const handleHome = (req, res) => {
+    return res.send(`Hello`);
 };
 
-//Get Request And Callback handleAccess
-app.get("/", handleAccess);
-app.get("/login", handleLogin);
+app.use(logger);
+app.get("/", handleHome);
 
 const handleListening = () => 
     console.log(`Server listening on port http://localhost:${PORT}`);
