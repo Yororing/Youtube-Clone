@@ -1,10 +1,12 @@
 import express from "express";
+import {recommend} from "../controllers/videosController";
+import {join} from "../controllers/usersController";
 
 //Create Global Router
 const globalRouter = express.Router();
-const handleHome = (req, res) => res.send("Home");
 
-globalRouter.get("/", handleHome);
+globalRouter.get("/", recommend);
+globalRouter.get("/join", join);
 
 //default Export
 export default globalRouter;
