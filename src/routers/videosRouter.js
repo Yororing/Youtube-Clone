@@ -1,14 +1,21 @@
 import express from "express";
-import {watch, edit} from "../controllers/videosController";
+import {see, edit, deleteVideo, upload} from "../controllers/videosController";
 
 //Create Videos Router
 const videoRouter = express.Router();
 
-//Watch
-videoRouter.get("/watch", watch);
+//Upload Sort top Cause of :id
+videoRouter.get("/upload", upload);
+
+//Watch 
+//:id = variable to \\d+ = digit Numeric
+videoRouter.get("/:id(\\d+)", see);
 
 //Edit
-videoRouter.get("/edit", edit);
+videoRouter.get("/:id(\\d+)/edit", edit);
+
+//Delete
+videoRouter.get("/:id(\\d+)/delete", deleteVideo);
 
 //Export
 export default videoRouter;
