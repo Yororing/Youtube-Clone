@@ -4,7 +4,7 @@ import {see, edit, deleteVideo, upload} from "../controllers/videosController";
 //Create Videos Router
 const videoRouter = express.Router();
 
-//Upload Sort top Cause of :id
+//Upload
 videoRouter.get("/upload", upload);
 
 //Watch 

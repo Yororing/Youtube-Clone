@@ -6,11 +6,17 @@ import userRouter from "./routers/usersRouter";
 import videoRouter from "./routers/videosRouter";
 
 const PORT = 4000;
+console.log(process.cwd());
+
 //Create express Application
 const app = express();
 //Create Controller or Middleware
 const logger = morgan("dev");
 app.use(logger);
+
+//Set Pug View Engine
+app.set("view engine", "pug");
+app.set("views", process.cwd() + "/src/views");
 
 //Using Routers
 app.use("/", globalRouter);
