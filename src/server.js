@@ -6,8 +6,6 @@ import userRouter from "./routers/usersRouter";
 import videoRouter from "./routers/videosRouter";
 
 const PORT = 4000;
-console.log(process.cwd());
-
 //Create express Application
 const app = express();
 //Create Controller or Middleware
