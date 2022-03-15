@@ -11,6 +11,8 @@ const app = express();
 //Create Controller or Middleware
 const logger = morgan("dev");
 app.use(logger);
+//For Use req.body
+app.use(express.urlencoded({ extended: true}));
 
 //Set Pug View Engine
 app.set("view engine", "pug");
