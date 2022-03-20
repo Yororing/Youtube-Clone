@@ -1,4 +1,5 @@
 //Call express, morgan from Module
+import "./database";
 import express from "express";
 import morgan from "morgan";
 import globalRouter from "./routers/globalRouter";

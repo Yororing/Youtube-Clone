@@ -4,14 +4,15 @@ import {
     getEdit, 
     postEdit, 
     deleteVideo, 
-    upload
+    getUpload,
+    postUpload
 } from "../controllers/videosController";
 
 //Create Videos Router
 const videoRouter = express.Router();
 
 //Upload
-videoRouter.get("/upload", upload);
+videoRouter.route("/upload").get(getUpload).post(postUpload);
 
 //Watch 
 //:id = variable to \\d+ = digit Numeric
