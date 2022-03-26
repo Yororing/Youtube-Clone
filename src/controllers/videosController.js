@@ -6,7 +6,7 @@ export const recommend = async (req, res) => {
     try {
         const videosPromise = await videoModel.find({});
         console.log(videosPromise);
-        return res.render("home", { pageTitle: "Home", videos: [] });
+        return res.render("home", { pageTitle: "Home", videosPromise });
     } catch {
         // Error Message
         return res.render("VideoFind-error");
@@ -46,8 +46,20 @@ export const getUpload = (req, res) => {
     return res.render("Upload", {pageTitle: "Upload Video"});
 };
 
-export const postUpload = (req, res) => {
-    //Add Video 
-    console.log(req.body);
+//Add Video 
+export const postUpload = async (req, res) => {
+    const { videoTitle, description, hashtags } = req.body;
+    // Update On Database
+    await newVideo.create({
+        title,
+        description,
+        createdAt: Date.now(),
+        hashtags: hashtags.split(",").map(word => `#${word}`),
+        meta: {
+            views: 0,
+            rating: 0,
+        },
+    });
+    console.log(dbVideo);
     return res.redirect("/");
 };
