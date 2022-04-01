@@ -49,7 +49,7 @@ export const deleteVideo = async (req, res) => {
     console.log(id);
     // Delete Video
     await videoModel.findByIdAndDelete(id);
-    return res.redirect("home");
+    return res.redirect("/");
 };
 
 export const getUpload = (req, res) => {
