@@ -16,13 +16,13 @@ videoRouter.route("/upload").get(getUpload).post(postUpload);
 
 //Watch 
 //:id = variable to \\d+ = digit Numeric
-videoRouter.get("/:id(\\d+)", watch);
+videoRouter.get("/:id([0-9a-f]{24})", watch);
 
 //Edit
-videoRouter.route("/:id(\\d+)/edit").get(getEdit).post(postEdit);
+videoRouter.route("/:id([0-9a-f]{24})/edit").get(getEdit).post(postEdit);
 
 //Delete
-videoRouter.get("/:id(\\d+)/delete", deleteVideo);
+videoRouter.get("/:id([0-9a-f]{24})/delete", deleteVideo);
 
 //Export
 export default videoRouter;
