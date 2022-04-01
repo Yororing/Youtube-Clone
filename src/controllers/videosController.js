@@ -23,7 +23,7 @@ export const getEdit = async (req, res) => {
     if(!findByIdVideo) {
         return res.render("404", { pageTitle: "Video not Found.", });
     }
-    return res.render("editVideo", { pageTitle: `Editing`, findByIdVideo });
+    return res.render("editVideo", { pageTitle: `Edit: ${findByIdVideo.title}`, findByIdVideo });
 };
 
 //Modify Videos
@@ -37,18 +37,19 @@ export const postEdit = async (req, res) => {
     await videoModel.findByIdAndUpdate(id, {
         title, 
         description, 
-        hashtags: hashtags.split(",").map(word => (word.startsWith(`#`) ? word : `#${word}`)),
+        hashtags: videoModel.formatHashtags(hashtags),
     });
-    return res.redirect(`/videos/${id}`, { pageTitle: `Editing`, findByIdVideo });
+    return res.redirect(`/videos/${id}`);
 };
 
 export const search = (req, res) => res.send("Search");
 
-export const upload = (req, res) => res.send("Upload");
-
-export const deleteVideo = (req, res) => {
-    console.log(req.params);
-    return res.send(`Delete Video #${req.params.id}`);
+export const deleteVideo = async (req, res) => {
+    const { id } = req.params;
+    console.log(id);
+    // Delete Video
+    await videoModel.findByIdAndDelete(id);
+    return res.redirect("home");
 };
 
 export const getUpload = (req, res) => {
@@ -60,12 +61,12 @@ export const postUpload = async (req, res) => {
     const { videoTitle, description, hashtags } = req.body;
     // Update On Database
     try {
-        await newVideo.create({
-            title,
+        const newVideo = await videoModel.create({
+            title: videoTitle,
             description,
-            hashtags: hashtags.split(",").map(word => (word.startsWith(`#`) ? word : `#${word}`)),
+            hashtags: videoModel.formatHashtags(hashtags),
         });
-        console.log(dbVideo);
+        console.log(newVideo);
         return res.redirect("/");
     } catch(error){
         // Call Upload Page and Add Error Message

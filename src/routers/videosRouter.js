@@ -22,7 +22,7 @@ videoRouter.get("/:id([0-9a-f]{24})", watch);
 videoRouter.route("/:id([0-9a-f]{24})/edit").get(getEdit).post(postEdit);
 
 //Delete
-videoRouter.get("/:id([0-9a-f]{24})/delete", deleteVideo);
+videoRouter.get("/:id([0-9a-f]{24})/delete").get(deleteVideo);
 
 //Export
 export default videoRouter;

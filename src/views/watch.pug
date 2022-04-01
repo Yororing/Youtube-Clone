@@ -4,4 +4,6 @@ block content
     div 
         p=findByIdVideo.description
         small=findByIdVideo.createdAt
-    a(href=`${findByIdVideo.id}/edit`) Edit Video &rarr;
+    a(href=`${findByIdVideo.id}/edit`) Edit Video &larr;
+    br
+    a(href=`${findByIdVideo.id}/delete`) Delete Video &rarr;
