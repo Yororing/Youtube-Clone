@@ -1,6 +1,6 @@
 import express from "express";
 import {
-    edit, remove, see, 
+    edit, see, 
     startGithubLogin, finishGithubLogin,
     logout
 } from "../controllers/usersController";
@@ -13,9 +13,6 @@ userRouter.get("/logout", logout);
 
 // Edit User
 userRouter.get("/edit", edit);
-
-// Remove UserInfo
-userRouter.get("/remove", remove);
 
 // Login with GitHub
 userRouter.get("/github/start", startGithubLogin);

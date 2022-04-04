@@ -1,12 +1,13 @@
-import userModel from "../models/User"
-import bcrypt from "bcrypt"
+import userModel from "../models/User";
+import fetch from "node-fetch";
+import bcrypt from "bcrypt";
 
 export const getJoin = (req, res) => {
     return res.render("join", {pageTitle : "Join"});
 }
 
 export const postJoin = async (req, res) => {
-    console.log(req.body);
+    // console.log(req.body);
     const pageTitle = "Join";
     const { name, username, email, password, password2, location } = req.body;
     const Exists = await userModel.exists({ $or: [{username}, {email}] });
@@ -48,8 +49,6 @@ export const postJoin = async (req, res) => {
 
 export const edit = (req, res) => res.send("Edit User");
 
-export const remove = (req, res) => res.send("Remove User");
-
 export const getLogin = (req, res) => 
     res.render("login", { pageTitle: "Login" });
 
@@ -59,7 +58,7 @@ export const postLogin = async (req, res) => {
 
     // Check Account Exist
     // Get User Object From DB
-    const user = await userModel.findOne({ username });
+    const user = await userModel.findOne({ username, socialOnly: false });
     if(!user){
         return res.status(400).render("login", {
             pageTitle, 
@@ -89,7 +88,7 @@ export const startGithubLogin = (req, res) => {
     const baseURL = `https://github.com/login/oauth/authorize?`;
     // Config Objects
     const config = {
-        client_id: GH_CLIENT,
+        client_id: process.env.GH_CLIENT,
         allow_signup: false,
         scope: "read:user user:email",
     };
@@ -113,18 +112,76 @@ export const finishGithubLogin = async (req, res) => {
     };
     console.log(config);
     const params = new URLSearchParams(config).toString();
-    const finalURL = `${baseURL}${params}`;
-    const data = await fetch(finalURL, {
-        method: "POST",
-        headers: {
-            Accept: "application/json",
-        },
-    });
+    const finalURL = `${baseURL}?${params}`;
+    const tokenRequest = await ( 
+        await fetch(finalURL, {
+            method: "POST",
+            headers: {
+                Accept: "application/json",
+            },
+        })
+    ).json();
 
-    const json = await data.json();
-    console.log(json);
+    if("access_token" in tokenRequest) {
+        // Using Access Token to Access GitHub API
+        const { access_token } = tokenRequest;
+        const apiUrl = "https://api.github.com";
+        const userData = await (
+            await fetch(`${apiUrl}/user`, {
+                headers: {
+                    Authorization: `token ${access_token}`,
+                },
+            })
+        ).json();
+        // console.log(userData);
+        
+        // Get User's Email Address
+        const emailData = await (
+            await fetch(`${apiUrl}/user/emails`, {
+                headers: {
+                    Authorization: `token ${access_token}`,
+                },
+            })
+        ).json();
+        // console.log(emailData);
+        
+        const emailObj = emailData.find(
+            (email) => email.primary === true && email.verified === true
+        );
+        
+        // If doesn't get Email Address go to login page
+        if(!emailObj) {
+            return res.redirect("/login");
+        }
+        // If User doesn't exist
+        let existUser = await userModel.findOne({ email: emailObj.email });
+        // Create User Account
+        if(!existUser) {
+                existUser = await userModel.create({
+                    name: userData.name ? userData.name: userData.login,
+                    avatarUrl: userData.avatar_url,
+                    socialOnly: true,
+                    username: userData.login,
+                    email: emailObj.email,
+                    password: "",
+                    location: userData.location,
+                }
+            );
+        }
+        req.session.loggedIn = true;
+        req.session.user = existUser;
+        return res.redirect("/");
+
+        // console.log(email);
+    } else {
+        return res.redirect("/login");
+    }
 };
 
-export const logout = (req, res) => res.send("Log Out");
+export const logout = (req, res) => {
+    // Log Out Destroy Session
+    req.session.destroy();
+    return res.redirect("/");
+}
 
 export const see = (req, res) => res.send("See");
