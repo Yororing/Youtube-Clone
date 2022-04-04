@@ -1,24 +1,41 @@
 //Call express, morgan from Module
 import express from "express";
 import morgan from "morgan";
-import globalRouter from "./routers/globalRouter";
+import session from "express-session";
+import MongoStore from "connect-mongo";
+import rootRouter from "./routers/rootRouter";
 import userRouter from "./routers/usersRouter";
 import videoRouter from "./routers/videosRouter";
+import { localsMiddleware } from "./middlewares";
 
-//Create express Application
+// Create express Application
 const app = express();
-//Create Controller or Middleware
+
+// Create Controller or Middleware
 const logger = morgan("dev");
 app.use(logger);
-//For Use req.body
+
+// For Use req.body
 app.use(express.urlencoded({ extended: true}));
 
-//Set Pug View Engine
+// Use Session MiddleWare For Logged In User
+app.use(
+    session({
+        secret: process.env.COOKIE_SECRET,
+        resave: false,
+        saveUninitialized: false,
+        // Session Store on Mongo DB
+        store: MongoStore.create({ mongoUrl: process.env.DB_URL }),
+    })
+);
+
+// Set Pug View Engine
 app.set("view engine", "pug");
 app.set("views", process.cwd() + "/src/views");
 
 //Using Routers
-app.use("/", globalRouter);
+app.use(localsMiddleware);
+app.use("/", rootRouter);
 app.use("/users", userRouter);
 app.use("/videos", videoRouter);
 

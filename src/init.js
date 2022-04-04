@@ -1,6 +1,10 @@
+// Load .env
+import "dotenv/config";
+
 // Initialize JavaScript
 import "./database";
-import videoModel from "./models/Video";
+import "./models/Video";
+import "./models/User"
 import app from "./server";
 
 const PORT = 4000;
