@@ -18,6 +18,10 @@ html(lang="en")
                             a(href="/users/logout") Log Out 
                         li 
                             a(href="/my-profile") #{loggedInUser.username}'s Profile
+                        li 
+                            a(href="/users/edit") Edit Profile
+                        li 
+                            a(href="/videos/upload") Upload Video
                     else
                         li 
                             a(href="/login") Login 
@@ -25,8 +29,6 @@ html(lang="en")
                             a(href="/join") Join 
                     li 
                         a(href="/search") Search 
-                    li 
-                        a(href="/videos/upload") Upload Video
         main 
             block content 
     include partials/footer

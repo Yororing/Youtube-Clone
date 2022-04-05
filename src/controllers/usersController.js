@@ -1,6 +1,7 @@
 import userModel from "../models/User";
 import fetch from "node-fetch";
 import bcrypt from "bcrypt";
+import { redirect } from "express/lib/response";
 
 export const getJoin = (req, res) => {
     return res.render("join", {pageTitle : "Join"});
@@ -46,8 +47,6 @@ export const postJoin = async (req, res) => {
         });
     }
 };
-
-export const edit = (req, res) => res.send("Edit User");
 
 export const getLogin = (req, res) => 
     res.render("login", { pageTitle: "Login" });
@@ -183,5 +182,76 @@ export const logout = (req, res) => {
     req.session.destroy();
     return res.redirect("/");
 }
+
+export const getEdit = (req, res) => {
+    res.render("edit-profile", { pageTitle: "Edit Profile", });
+}
+
+export const postEdit = async (req, res) => {
+    
+    const { 
+        // Get Id From Request
+        session: { 
+            user: { _id, email: sessionEmail, username: sessionUsername },
+        }, 
+        // Get Information From Edit Form
+        body: { name, username, email, location },
+    } = req;
+    
+    // Duplication Check
+    let searchParam = [];
+    
+    // Check Email is Updated?
+    if(sessionEmail !== email) {
+        searchParam.push({ email });
+    }
+
+    // Check Username is Updated?
+    if(sessionUsername !== username) {
+        searchParam.push({ username });
+    }
+
+    // If get changes Check Duplication
+    if(searchParam.length > 0) {
+        const foundUser = await userModel.findOne( { $or: searchParam });
+
+        // If get Duplication send Error Message
+        if(foundUser && foundUser._id.toString() !== _id) {
+            return res.status(400).render("edit-profile", {
+                pageTitle: "Edit Profile",
+                errorMessage: "This username/email is already taken.",
+            });
+        }
+    }
+
+    // Update Profile On DB
+    const updateUser = await userModel.findByIdAndUpdate(_id, {
+            name,
+            username,
+            email,
+            location,
+        },
+        {
+            // Session Update
+            new: true
+        },
+    );
+    
+    req.session.user = updateUser;
+
+    res.redirect("/users/edit");
+};
+
+export const getChangePassword = (req, res) => {
+    // Prevent Forced Connection to Change Password If social Login
+    if(req.session.user.socialOnly === true) {
+        return res.redirect("/");
+    }
+    return res.render("users/change-password", { pageTitle: "Change Password" })
+};
+
+export const postChangePassword = (req, res) => {
+    return res.redirect("/users/my-profile");
+};
 
 export const see = (req, res) => res.send("See");
