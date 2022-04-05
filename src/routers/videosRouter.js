@@ -8,7 +8,7 @@ import {
     getUpload,
     postUpload
 } from "../controllers/videosController";
-import { protectorMiddleware } from "../middlewares";
+import { protectorMiddleware, videoUpload } from "../middlewares";
 
 //Create Videos Router
 const videoRouter = express.Router();
@@ -18,7 +18,7 @@ videoRouter
     .route("/upload")
     .all(protectorMiddleware)
     .get(getUpload)
-    .post(postUpload);
+    .post(videoUpload.single("video"), postUpload);
 
 //Watch 
 //:id = variable to \\d+ = digit Numeric

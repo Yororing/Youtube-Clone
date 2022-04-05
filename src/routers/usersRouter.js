@@ -6,7 +6,11 @@ import {
     getChangePassword,
     postChangePassword
 } from "../controllers/usersController";
-import { protectorMiddleware, publicOnlyMiddleware } from "../middlewares";
+import { 
+    protectorMiddleware, 
+    publicOnlyMiddleware,
+    avatarUpload,
+} from "../middlewares";
 
 // Create Users Router
 const userRouter = express.Router();
@@ -15,7 +19,10 @@ const userRouter = express.Router();
 userRouter.get("/logout", protectorMiddleware, logout);
 
 // Edit User
-userRouter.route("/edit").all(protectorMiddleware).get(getEdit).post(postEdit);
+userRouter.route("/edit")
+    .all(protectorMiddleware)
+    .get(getEdit)
+    .post(avatarUpload.single("avatar"), postEdit);
 
 // Change Password
 userRouter.route("/change-password").all(protectorMiddleware).get(getChangePassword).post(postChangePassword);

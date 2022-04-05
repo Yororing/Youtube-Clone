@@ -72,12 +72,14 @@ export const getUpload = (req, res) => {
 
 //Add Video 
 export const postUpload = async (req, res) => {
+    const { path: fileUrl } = req.file;
     const { videoTitle, description, hashtags } = req.body;
     // Update On Database
     try {
         const newVideo = await videoModel.create({
             title: videoTitle,
             description,
+            fileUrl,
             hashtags: videoModel.formatHashtags(hashtags),
         });
         //console.log(newVideo);

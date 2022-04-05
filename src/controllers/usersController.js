@@ -192,10 +192,12 @@ export const postEdit = async (req, res) => {
     const { 
         // Get Id From Request
         session: { 
-            user: { _id, email: sessionEmail, username: sessionUsername },
+            user: { _id, avatarUrl, email: sessionEmail, username: sessionUsername },
         }, 
         // Get Information From Edit Form
         body: { name, username, email, location },
+        // Get file From Edit Form, Upload folder
+        file,
     } = req;
     
     // Duplication Check
@@ -214,6 +216,7 @@ export const postEdit = async (req, res) => {
     // If get changes Check Duplication
     if(searchParam.length > 0) {
         const foundUser = await userModel.findOne( { $or: searchParam });
+        console.log(foundUser);
 
         // If get Duplication send Error Message
         if(foundUser && foundUser._id.toString() !== _id) {
@@ -225,7 +228,9 @@ export const postEdit = async (req, res) => {
     }
 
     // Update Profile On DB
-    const updateUser = await userModel.findByIdAndUpdate(_id, {
+    const updateUser = await userModel.findByIdAndUpdate
+        (_id, {
+            avatarUrl: file ? file.path : avatarUrl,
             name,
             username,
             email,
@@ -250,8 +255,47 @@ export const getChangePassword = (req, res) => {
     return res.render("users/change-password", { pageTitle: "Change Password" })
 };
 
-export const postChangePassword = (req, res) => {
-    return res.redirect("/users/my-profile");
+export const postChangePassword = async (req, res) => {
+    // Get ID from session & Get Password from change-password.pug
+    const { 
+        session: { 
+            user: { _id, password },
+        },
+        body: {
+            oldPassword, newPassword,confirmNewPassword 
+        },
+    } = req;
+
+    // Check Old Password is Correct
+    const checkingPassword = await bcrypt.compare(oldPassword, password);
+    if(!checkingPassword) {
+        return res.status(400).render("users/change-password", { pageTitle: "Change Password" , errorMessage: "The current password is incorrect" });
+    }
+
+    // Check New Password
+    if(newPassword !== confirmNewPassword) {
+        return res.status(400).render("users/change-password", { pageTitle: "Change Password" , errorMessage: "The password doesn't match the confirmation" });
+    }
+
+    // Update New Password
+    const user = await userModel.findById(_id);
+    user.password = newPassword;
+    user.save();
+
+    // Update Session
+    req.session.user.password = user.password;
+
+    return res.redirect("/users/logout");
 };
 
-export const see = (req, res) => res.send("See");
+// Get User Profile From id
+export const see = async (req, res) => {
+    const { id } = req.params;
+    const user = await userModel.findById(id);
+
+    if(!user) {
+        return res.status(404).render("404", { pageTitle: "User not Found", });
+    }
+
+    return res.render("users/profile", { pageTitle: `${user.username}'s Profile`, user});
+};
