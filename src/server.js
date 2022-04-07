@@ -36,6 +36,7 @@ app.set("views", process.cwd() + "/src/views");
 //Using Routers
 app.use(localsMiddleware);
 app.use("/uploads", express.static("uploads"));
+app.use("/assets",express.static("assets"));
 app.use("/", rootRouter);
 app.use("/users", userRouter);
 app.use("/videos", videoRouter);
