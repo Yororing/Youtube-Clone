@@ -1,4 +1,5 @@
 import userModel from "../models/User";
+import videoModel from "../models/Video";
 import fetch from "node-fetch";
 import bcrypt from "bcrypt";
 import { redirect } from "express/lib/response";
@@ -291,11 +292,17 @@ export const postChangePassword = async (req, res) => {
 // Get User Profile From id
 export const see = async (req, res) => {
     const { id } = req.params;
-    const user = await userModel.findById(id);
+    const user = await userModel.findById(id).populate("videos");
 
+    console.log(user);
+
+    // Profile Error
     if(!user) {
         return res.status(404).render("404", { pageTitle: "User not Found", });
     }
 
-    return res.render("users/profile", { pageTitle: `${user.username}'s Profile`, user});
+    return res.render("users/profile", { 
+        pageTitle: `${user.username}'s Profile`, 
+        user,
+    });
 };

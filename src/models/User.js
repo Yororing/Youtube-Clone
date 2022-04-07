@@ -10,16 +10,17 @@ const userSchema = new mongoose.Schema({
     username: { type: String, required: true, unique: true },
     password: { type: String,  },
     location: String,
+    videos: [ { type: mongoose.Schema.Types.ObjectId, ref: "Video" } ],
 });
 
 // Hashing Password
 userSchema.pre('save', async function() {
-    // Typing Password
-    // console.log("Typing Password", this.password);
-    this.password = await bcrypt.hash(this.password, 5);
-    // Hashed Password
-    // console.log("Hashed Password", this.password);
-})
+
+    // Just change Password save will hash
+    if(this.isModified("password")) {
+        this.password = await bcrypt.hash(this.password, 5);
+    }
+});
 
 const userModel = mongoose.model("User", userSchema);
 
