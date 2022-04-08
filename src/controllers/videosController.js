@@ -44,15 +44,15 @@ export const postEdit = async (req, res) => {
     const { id } = req.params;
     const { user: { _id } } = req.session;
     const { title, description, hashtags } = req.body;
-    const findByIdVideo = await videoModel.exists({_id:id});
+    const existVideo = await videoModel.exists({_id: id});
     
     // Check the Video
-    if(!findByIdVideo) {
+    if(!existVideo) {
         return res.status(404).render("404", { pageTitle: "Video not Found.", });
     }
 
     // Check the Owner of video
-    if( String(findByIdVideo.owner) !== String(_id) ) {
+    if( String(existVideo.owner) !== String(_id) ) {
         return res.status(403).redirect("/");
     }
 
@@ -77,7 +77,7 @@ export const search = async (req, res) => {
                 // Search As Title contains Keywords By MongoDB Query
                 $regex: new RegExp(`${keywords}`, "i"),
             },
-        });
+        }).populate("owner");
     }
     return res.render("search", { pageTitle: "Search", searchVideos });
 }

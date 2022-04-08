@@ -1,5 +1,6 @@
 header {
-    padding: 20px 30px;
+    padding: 15px 55px;
+    position: relative;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -18,7 +19,7 @@ header {
             text-transform: uppercase;
         }
         i {
-            font-size: 16px;
+            font-size: 15px;
         }    
     }
     .header__btn {
@@ -26,5 +27,13 @@ header {
         color: $bg;
         padding: 5px 10px;
         border-radius: 5px;
+    }
+    .header__avatar {
+        margin-top: -5px;
+        margin-left: 5px;
+        position: absolute;
+        width: 25px;
+        height: 25px;
+        border-radius: 50%;
     }
 }

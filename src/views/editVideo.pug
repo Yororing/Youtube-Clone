@@ -1,7 +1,6 @@
 extends base.pug
 
 block content  
-    h4 Update video
     form(method="POST")
         input(placeholder="Title", required, type="text", name="title", maxLength=80, value=findByIdVideo.title)
         input(placeholder="Description", type="text", name="description", value=findByIdVideo.description)

@@ -3,7 +3,6 @@ extend base
 block content 
     if errorMessage 
         span=errorMessage
-    h3 Upload my Video
     form(method="POST", enctype="multipart/form-data")
         label(for="video") Video File 
         input(type="file", accept="video/*", id="video", name="video", required)
