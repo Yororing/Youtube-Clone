@@ -1,0 +1,21 @@
+.search__form {
+    display: flex;
+    flex-direction: column;
+    max-width: 320px;
+    margin: 0 auto;
+    input {
+        all: unset;
+        padding: 10px 20px;
+        border-radius: 5px;
+        border: 1px solid rgba($color: white, $alpha: 0.2);
+        background-color: black;
+        margin-bottom: 5px;
+        font-size: 16px;
+        color: white;
+    }
+    input[type="submit"] {
+        background-color: rgba($color: black, $alpha: 0.3);
+        text-align: center;
+        padding: 10px;
+    }
+}

@@ -4,7 +4,7 @@ import userModel from "../models/User";
 // Create Video Controllers
 export const recommend = async (req, res) => {
     //Using MongoDB Query Promise
-    const videosPromise = await videoModel.find({}).sort({createdAt: "desc"});
+    const videosPromise = await videoModel.find({}).sort({createdAt: "desc"}).populate("owner");
     //console.log(videosPromise);
     return res.render("home", { pageTitle: "Home", videosPromise });
 };
