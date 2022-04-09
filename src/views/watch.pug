@@ -1,14 +1,35 @@
 extends base.pug
 
 block content 
-    video(src="/" + findByIdVideo.fileUrl, controls)
-    div 
-        p=findByIdVideo.description
-        small=findByIdVideo.createdAt
-    div
-        small Uploaded By 
-            a(href=`/users/${findByIdVideo.owner._id}`)=findByIdVideo.owner.username
-    if String(findByIdVideo.owner._id) === String(loggedInUser._id)
-        a(href=`${findByIdVideo.id}/edit`) Edit Video &larr;
-        br
-        a(href=`${findByIdVideo.id}/delete`) Delete Video &rarr;
+    div#videoContainer
+        video(src="/" + findByIdVideo.fileUrl)
+        div#videoControls.videoControls 
+            div.videoControls__play 
+                span#play.videoControls__playBtn
+                    i.fas.fa-play 
+                div.videoControls__time  
+                    span#currentTime 00:00
+                    span /
+                    span#totalTime 00:00
+            input(type="range",step="0.1", value=0, min="0")#timeRange.videoControls__timeline
+            div.videoControls__volume 
+                input(type="range",step="0.05", value=0.5, min="0", max="1")#volume
+                span#mute
+                    i.fas.fa-volume-up 
+            div 
+                span#fullScreen
+                    i.fas.fa-expand     
+        //-
+            div 
+                p=findByIdVideo.description
+                small=findByIdVideo.createdAt
+            div
+                small Uploaded By 
+                    a(href=`/users/${findByIdVideo.owner._id}`)=findByIdVideo.owner.username
+            if String(findByIdVideo.owner._id) === String(loggedInUser._id)
+                a(href=`${findByIdVideo.id}/edit`) Edit Video &larr;
+                br
+                a(href=`${findByIdVideo.id}/delete`) Delete Video &rarr;
+
+block scripts 
+    script(src="/assets/js/videoPlayer.js")
