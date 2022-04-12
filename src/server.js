@@ -34,6 +34,13 @@ app.use(
 app.set("view engine", "pug");
 app.set("views", process.cwd() + "/src/views");
 
+// Set FFmpeg
+app.use((req, res, next) => {
+    res.header("Cross-Origin-Embedder-Policy", "require-corp");
+    res.header("Cross-Origin-Opener-Policy", "same-origin");
+    next();
+});
+
 //Using Routers
 app.use(localsMiddleware);
 app.use("/uploads", express.static("uploads"));

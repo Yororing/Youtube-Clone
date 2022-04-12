@@ -112,7 +112,7 @@ export const getUpload = (req, res) => {
 //Add Video 
 export const postUpload = async (req, res) => {
     const { user: { _id } } = req.session;
-    const { path: fileUrl } = req.file;
+    const { video, thumb } = req.files;
     const { videoTitle, description, hashtags } = req.body;
     
     // Update On Database
@@ -120,7 +120,8 @@ export const postUpload = async (req, res) => {
         const newVideo = await videoModel.create({
             title: videoTitle,
             description,
-            fileUrl,
+            fileUrl: video[0].path,
+            thumbUrl: thumb[0].path,
             owner: _id,
             hashtags: videoModel.formatHashtags(hashtags),
         });
