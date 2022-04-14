@@ -3,6 +3,7 @@ import express from "express";
 import morgan from "morgan";
 import session from "express-session";
 import MongoStore from "connect-mongo";
+import flash from "express-flash";
 import rootRouter from "./routers/rootRouter";
 import userRouter from "./routers/usersRouter";
 import videoRouter from "./routers/videosRouter";
@@ -42,6 +43,7 @@ app.use((req, res, next) => {
 });
 
 //Using Routers
+app.use(flash());
 app.use(localsMiddleware);
 app.use("/uploads", express.static("uploads"));
 app.use("/assets",express.static("assets"));

@@ -33,6 +33,7 @@ export const getEdit = async (req, res) => {
 
     // Check the Owner of video
     if( String(findByIdVideo.owner) !== String(_id) ) {
+        req.flash("error", "Not authorized");
         return res.status(403).redirect("/");
     }
 
@@ -44,7 +45,7 @@ export const postEdit = async (req, res) => {
     const { id } = req.params;
     const { user: { _id } } = req.session;
     const { title, description, hashtags } = req.body;
-    const existVideo = await videoModel.exists({_id: id});
+    const existVideo = await videoModel.findById({_id: id});
     
     // Check the Video
     if(!existVideo) {
@@ -53,6 +54,7 @@ export const postEdit = async (req, res) => {
 
     // Check the Owner of video
     if( String(existVideo.owner) !== String(_id) ) {
+        req.flash("error", "Not authorized");
         return res.status(403).redirect("/");
     }
 
@@ -63,6 +65,7 @@ export const postEdit = async (req, res) => {
         hashtags: videoModel.formatHashtags(hashtags),
     });
 
+    req.flash("success", "Changes saved");
     return res.redirect(`/videos/${id}`);
 };
 
@@ -96,11 +99,13 @@ export const deleteVideo = async (req, res) => {
 
     // Check the Owner of video
     if( String(findByIdVideo.owner) !== String(_id) ) {
+        req.flash("error", "Not authorized");
         return res.status(403).redirect("/");
     }
 
     // Delete Video
     await videoModel.findByIdAndDelete(id);
+    req.flash("success", "Delete complete");
 
     return res.redirect("/");
 };
@@ -131,7 +136,7 @@ export const postUpload = async (req, res) => {
         user.save();
 
         // console.log(newVideo, user);
-
+        
         return res.redirect("/");
 
     } catch(error){

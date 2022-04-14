@@ -180,6 +180,7 @@ export const finishGithubLogin = async (req, res) => {
 
 export const logout = (req, res) => {
     // Log Out Destroy Session
+    req.flash("info", "Bye Bye");
     req.session.destroy();
     return res.redirect("/");
 }
@@ -251,6 +252,7 @@ export const postEdit = async (req, res) => {
 export const getChangePassword = (req, res) => {
     // Prevent Forced Connection to Change Password If social Login
     if(req.session.user.socialOnly === true) {
+        req.flash("error", "Can't change password");
         return res.redirect("/");
     }
     return res.render("users/change-password", { pageTitle: "Change Password" })
