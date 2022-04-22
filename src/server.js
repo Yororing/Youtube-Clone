@@ -18,7 +18,8 @@ const logger = morgan("dev");
 app.use(logger);
 
 // For Use req.body
-app.use(express.urlencoded({ extended: true}));
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 // Use Session MiddleWare For Logged In User
 app.use(

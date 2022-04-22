@@ -19,17 +19,21 @@ block content
             div 
                 span#fullScreen
                     i.fas.fa-expand     
-        //-
-            div 
-                p=findByIdVideo.description
-                small=findByIdVideo.createdAt
-            div
-                small Uploaded By 
-                    a(href=`/users/${findByIdVideo.owner._id}`)=findByIdVideo.owner.username
-            if String(findByIdVideo.owner._id) === String(loggedInUser._id)
-                a(href=`${findByIdVideo.id}/edit`) Edit Video &larr;
-                br
-                a(href=`${findByIdVideo.id}/delete`) Delete Video &rarr;
-
-block scripts 
+    div.video__data 
+        p.video__title=findByIdVideo.title
+        small.video__owner Uploaded By 
+            a(href=`/users/${findByIdVideo.owner._id}`)=findByIdVideo.owner.username
+        small.video__createdAt=new Date(findByIdVideo.createdAt).toLocaleDateString("ko-kr", {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'})
+        if String(findByIdVideo.owner._id) === String(loggedInUser._id)
+            a(href=`${findByIdVideo.id}/edit`) Edit Video &larr;
+            br
+            a(href=`${findByIdVideo.id}/delete`) Delete Video &rarr;
+    if loggedIn
+        div.video__comments
+            form.video__comments-form#commentForm
+                textarea(cols="30", rows="10", placeholder="write your comment.")
+                button Add Comment
+block scripts
     script(src="/assets/js/videoPlayer.js")
+    if loggedIn
+        script(sre="/assets/js/commentSection.js")

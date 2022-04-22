@@ -1,5 +1,7 @@
 import videoModel from "../models/Video";
 import userModel from "../models/User";
+import Comment from "../models/Comment";
+import { async } from "regenerator-runtime";
 
 // Create Video Controllers
 export const recommend = async (req, res) => {
@@ -11,7 +13,7 @@ export const recommend = async (req, res) => {
 
 export const watch = async (req, res) => {
     const { id } = req.params;
-    
+
     // Find Video By Id From Video Model And Fill owner information
     const findByIdVideo = await videoModel.findById(id).populate("owner");
 
@@ -46,7 +48,7 @@ export const postEdit = async (req, res) => {
     const { user: { _id } } = req.session;
     const { title, description, hashtags } = req.body;
     const existVideo = await videoModel.findById({_id: id});
-    
+
     // Check the Video
     if(!existVideo) {
         return res.status(404).render("404", { pageTitle: "Video not Found.", });
@@ -60,8 +62,8 @@ export const postEdit = async (req, res) => {
 
     // Update Video
     await videoModel.findByIdAndUpdate(id, {
-        title, 
-        description, 
+        title,
+        description,
         hashtags: videoModel.formatHashtags(hashtags),
     });
 
@@ -91,7 +93,7 @@ export const deleteVideo = async (req, res) => {
     //console.log(id);
 
     const findByIdVideo = await videoModel.findById(id);
-    
+
     // Check the Video
     if(!findByIdVideo) {
         return res.status(404).render("404", { pageTitle: "Video not Found.", });
@@ -114,12 +116,12 @@ export const getUpload = (req, res) => {
     return res.render("upload", {pageTitle: "Upload Video"});
 };
 
-//Add Video 
+//Add Video
 export const postUpload = async (req, res) => {
     const { user: { _id } } = req.session;
     const { video, thumb } = req.files;
     const { videoTitle, description, hashtags } = req.body;
-    
+
     // Update On Database
     try {
         const newVideo = await videoModel.create({
@@ -136,13 +138,13 @@ export const postUpload = async (req, res) => {
         user.save();
 
         // console.log(newVideo, user);
-        
+
         return res.redirect("/");
 
     } catch(error){
         // Call Upload Page and Add Error Message
         return res.status(400).render("Upload", {
-            pageTitle: "Upload Video", 
+            pageTitle: "Upload Video",
             errorMessage: error._message,
         });
     }
@@ -160,4 +162,32 @@ export const registerView = async (req, res) => {
     await video.save();
 
     return res.sendStatus(200);
+};
+
+// Create comment
+export const createComment = async (req, res) => {
+    console.log(req.session.user);
+    console.log(req.body);
+    console.log(req.params);
+
+    const {
+        session: { user },
+        body: { text },
+        params: { id },
+    } = req;
+    // console.log(user, text, id);
+
+    const video = await videoModel.findById(id);
+
+    if(!video) {
+        return res.sendStatus(404);
+    }
+
+    const comment = await Comment.create({
+        text,
+        owner: user._id,
+        video: id,
+    });
+
+    return res.sendStatus(201);
 };

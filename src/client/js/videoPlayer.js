@@ -46,7 +46,7 @@ const handlePlayClick = (event) => {
 
 const handleMuteClick = (e) => {
     if(video.muted) {
-        video.muted = false;  
+        video.muted = false;
     }
     else {
         video.muted = true;
