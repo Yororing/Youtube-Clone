@@ -1,12 +1,12 @@
 import videoModel from "../models/Video";
 import userModel from "../models/User";
-import Comment from "../models/Comment";
+import commentModel from "../models/Comment";
 import { async } from "regenerator-runtime";
 
 // Create Video Controllers
 export const recommend = async (req, res) => {
     //Using MongoDB Query Promise
-    const videosPromise = await videoModel.find({}).sort({createdAt: "desc"}).populate("owner");
+    const videosPromise = await videoModel.find({}).sort({createdAt: "desc"}).populate("owner").populate("comments");
     //console.log(videosPromise);
     return res.render("home", { pageTitle: "Home", videosPromise });
 };
@@ -166,16 +166,16 @@ export const registerView = async (req, res) => {
 
 // Create comment
 export const createComment = async (req, res) => {
-    console.log(req.session.user);
-    console.log(req.body);
-    console.log(req.params);
+    // console.log(req.session.user);
+    // console.log(req.body);
+    // console.log(req.params);
 
     const {
         session: { user },
         body: { text },
         params: { id },
     } = req;
-    // console.log(user, text, id);
+    console.log(user, text, id);
 
     const video = await videoModel.findById(id);
 
@@ -183,11 +183,14 @@ export const createComment = async (req, res) => {
         return res.sendStatus(404);
     }
 
-    const comment = await Comment.create({
+    const comment = await commentModel.create({
         text,
         owner: user._id,
         video: id,
     });
 
-    return res.sendStatus(201);
+    video.comments.push(comment._id);
+    video.save();
+
+    return res.sendStatus(201).json({ newCommentId: comment._id});
 };

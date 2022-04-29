@@ -1,7 +1,7 @@
 extends base.pug
 
 block content 
-    div#videoContainer(data-Id=findByIdVideo._id)
+    div#videoContainer(data-id=findByIdVideo._id)
         video(src="/" + findByIdVideo.fileUrl)
         div#videoControls.videoControls 
             div.videoControls__play 
@@ -29,10 +29,17 @@ block content
             br
             a(href=`${findByIdVideo.id}/delete`) Delete Video &rarr;
     if loggedIn
-        div.video__comments
+        div.video__add-comments
             form.video__comments-form#commentForm
-                textarea(cols="30", rows="10", placeholder="write your comment.")
+                textarea(cols="40", rows="1", placeholder="write your comment.")
                 button Add Comment
+    div.video__comments
+        ul
+            each comment in findByIdVideo.comments.reverse()
+                li.video__comment
+                    i.fas.fa-comment
+                    span  #{comment.text}
+                    span ❌
 block scripts
     script(src="/assets/js/videoPlayer.js")
     if loggedIn
