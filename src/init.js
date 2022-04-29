@@ -1,6 +1,8 @@
 // Load .env
 import "dotenv/config";
 
+import "regenerator-runtime";
+
 // Initialize JavaScript
 import "./database";
 import "./models/Video";
